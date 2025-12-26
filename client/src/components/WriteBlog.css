@@ -1,0 +1,9 @@
+.BlogInput{
+    display:flex;
+    flex-direction: column;
+}
+
+.BlogTitle{
+    width: 500px;
+    height: 40px;
+}
