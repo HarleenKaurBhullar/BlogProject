@@ -4,20 +4,31 @@ const Like=require("../models/likes.model");
 const getlikestatus=async (req,res)=>{
   try{
     const {blogId,username}=req.params;
-    const likeCount=await Like.countDocuments({blogId});
+    // const likeCount=await Like.countDocuments({blogId});
     let liked=false;
     const likestatus=await Like.findOne({blogId,username});
     if(likestatus){
       liked=true;
     }
-    res.status(200).json({likeCount, liked});
+    res.status(200).json({ liked});
   }
   catch(error){
     console.error(error);
-    return res.status(500).json({likeCount:0, liked:false});
+    return res.status(500).json({ liked:false});
   }
 }
 
+const getlikecount=async(req,res)=>{
+  try{
+    const {blogId}=req.params;
+    const likeCount=await Like.countDocuments({blogId});
+    res.status(200).json({likeCount});
+  }
+  catch(error){
+    console.error(error);
+    return res.status(500).json({likeCount:0});
+  }
+}
 const liketoggle=async(req,res)=>{
   try{
     const {blogid,username}=req.body;
@@ -96,4 +107,4 @@ const deleteblog=async (req,res)=>{
     res.status(500).json({message: "Server error"});
   }
 }
-module.exports = { blogwrite, deleteblog, getlikestatus, liketoggle };
+module.exports = { blogwrite, deleteblog, getlikecount, getlikestatus, liketoggle };

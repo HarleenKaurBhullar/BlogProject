@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/Authcontext";
 const MakeBlog = ({blogData,blogId,isEdit}) => {
   const [formdata, setformdata] = useState({
   title: blogData?.title || "",
@@ -8,14 +9,7 @@ const MakeBlog = ({blogData,blogId,isEdit}) => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
 
-  let user;
-  try {
-    const storedUser = localStorage.getItem("user");
-    user = storedUser ? JSON.parse(storedUser) : null;
-  } catch (error) {
-    console.error("Error parsing user from localStorage", error);
-  }
-
+  const {user} = useAuth();
   const handlechange = (e) => {
     const { name, value } = e.target;
     setformdata((values) => ({ ...values, [name]: value }));
@@ -44,6 +38,7 @@ const MakeBlog = ({blogData,blogId,isEdit}) => {
       const response = await fetch(url, {
         method,
         body: formDataToSend,
+        credentials: 'include',
       });
       const data = await response.json();
       if (!response.ok) {

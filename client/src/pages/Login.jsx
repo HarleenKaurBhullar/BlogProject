@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from "../context/Authcontext";
+
+
+
 const Login = () => {
+  const { setUser: setAuthUser } = useAuth();
   const [user, setUser] = useState({ emailid:"",username: "", password: "" });
   const navigate=useNavigate();
 
@@ -13,20 +18,24 @@ const Login = () => {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify(userdetails),
+        credentials:'include',
       });
       const data=await response.json();
       console.log(data);
       if (!response.ok) {
-        console.log(`Error:${Response.status}`);
+        console.log(`Error:${response.status}`);
         return;
       }  
-        localStorage.setItem("user",JSON.stringify(data.user));
-        alert("User login Successful");
-        navigate('/');
+
+      setAuthUser(data.user);
+      localStorage.setItem("user", JSON.stringify(data.user)); // persist in browser
+
+      alert("User login Successful");
+      navigate('/');
         
       
     } catch (error) {
-      console.log("Error:", error.status);
+      console.log("Error:", error);
     }
   };
 

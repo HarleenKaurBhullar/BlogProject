@@ -37,7 +37,7 @@ const styles = {
   item: {
     padding: "8px",
     borderRadius: "4px",
-    display: "block",
+    display: "block"
   }
 };
 

@@ -2,24 +2,18 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
+import { useAuth } from "../context/Authcontext";
 const MyBlogs = () => {
   const [blogs, setBlogs] = useState([]);
   const navigate = useNavigate();
-  let username;
-  try{
-    const data=localStorage.getItem('user');
-    const user=JSON.parse(data);
-    username=user.username;
-  }
-  catch(error){
-    
-  }
-  if(!username){
+  const { user } = useAuth();
+  
+  if(!user){
     return;
   }
   useEffect(() => {
     axios
-      .get(`http://localhost:5080/api/users/myblogs/${username}`)
+      .get(`http://localhost:5080/api/users/myblogs/${user}`,{ withCredentials: true })
       .then((res) => setBlogs(res.data))
       .catch((err) => {
         console.log(err);

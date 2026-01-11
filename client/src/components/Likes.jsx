@@ -5,18 +5,43 @@ const Like=({blogid,username})=>{
     const [liked,setLiked]=useState(false);
     const [likeCount,setLikeCount]=useState(0);
 
-    useEffect(()=>{
-        const fetchLikeStatus=async()=>{
-            try{
-                const response=await fetch(`http://localhost:5080/api/users/likes/${blogid}/${username}`);
-                const data=await response.json();
-                if(response.ok){
-                    setLiked(data.liked);
-                    setLikeCount(data.likeCount);
-                }}
-            catch(error){
-                console.error("Error fetching like status:", error);
-            }}; fetchLikeStatus();},[blogid,username]);
+    // useEffect(()=>{
+    //     const fetchLikeStatus=async()=>{
+    //         try{
+    //             const response=await fetch(`http://localhost:5080/api/users/likes/${blogid}/${username}`);
+    //             const data=await response.json();
+    //             if(response.ok){
+    //                 setLiked(data.liked);
+    //                 setLikeCount(data.likeCount);
+    //             }}
+    //         catch(error){
+    //             console.error("Error fetching like status:", error);
+    //         }}; fetchLikeStatus();},[blogid,username]);
+
+    useEffect(() => {
+    const fetchLikeData = async () => {
+        try {
+            // 1. Fetch total likes (Publicly accessible)
+            const countRes = await fetch(`http://localhost:5080/api/users/likes/${blogid}/like-count`);
+            const countData = await countRes.json();
+            setLikeCount(countData.likeCount);
+
+            // 2. Fetch specific user status (Only if logged in)
+            if (username) {
+                const statusRes = await fetch(`http://localhost:5080/api/users/likes/${blogid}/${username}`,{
+                    credentials: 'include',
+                });
+                const statusData = await statusRes.json();
+                if (statusRes.ok) {
+                    setLiked(statusData.liked);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching likes:", error);
+        }
+    };
+    fetchLikeData();
+}, [blogid, username]);
     
     const likehandle=async()=>{
         if(!username){
@@ -28,6 +53,7 @@ const Like=({blogid,username})=>{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({blogid,username}),
+                credentials:'include',
             });
             const data=await response.json();
             if(response.ok){

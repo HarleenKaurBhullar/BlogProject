@@ -23,6 +23,7 @@ const Comment = ({blogId,username}) => {
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({blogId,username,commentText:commentText}),
+                credentials:'include',
             });
             if(response.ok){
                 const newComment=await response.json();

@@ -16,7 +16,9 @@ const EditBlog = () => {
     const url=`http://localhost:5080/api/users/deleteblog/${id}`;
     const response=await fetch(url,{
         method:"DELETE",
-        headers:{}})
+        headers:{},
+        credentials:'include',
+    });
     if(response.ok){
         alert("Blog deleted successfully");
         navigate('/');

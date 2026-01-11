@@ -4,22 +4,18 @@ import { useLocation, useParams, Link } from "react-router-dom"
 import { FaEdit, FaHeart, FaComment } from "react-icons/fa";
 import Like from "./Likes";
 import Comment from "./Comment";
+import { useAuth } from "../context/Authcontext";
 const Blogbox=()=>{
     const {id} =useParams();
     const location=useLocation();
     const passedBlog=location.state && location.state.blog;
-    const [blog,setblog]=useState([])
-    const [loading,setloading]=useState(!passedBlog)
-    const [error, setError]=useState(null)
-    let currentusername;
-    try{
-      const data=localStorage.getItem("user")
-      if(data){
-        const user=JSON.parse(data)
-        currentusername=user.username;
-      }
-    } 
-    catch(error){}
+    const [blog,setblog]=useState([]);
+    const [loading,setloading]=useState(!passedBlog);
+    const [error, setError]=useState(null);
+    console.log("hi");
+    const {user}=useAuth();
+    console.log('username:',user);
+    const currentusername=user.username;
     
 
     useEffect(()=>{
@@ -65,7 +61,7 @@ console.log("blogId:", id, "username:", currentusername);
     >
       Back
     </Link>
-    
+
     {currentusername===blog.username && (
     <Link to="/Editblog" state={{title: blog.title, body: blog.body,id:id}} className="absolute p-2 right-0 top-0 m-4 bg-black text-white rounded">
       Edit <FaEdit className="inline ml-1"/>

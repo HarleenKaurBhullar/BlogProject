@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom'
+import { useAuth } from "../context/Authcontext";
+
+
 const Register = () => {
+  const { setUser: setAuthUser } = useAuth();
   const [newuser, setUser] = useState({
     emailid: "",
     username: "",
@@ -16,14 +20,19 @@ const Register = () => {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify(userdetails),
+        credentials:'include',
       });
+      const data = await response.json();
       if (!response.ok) {
-        console.log(`Error:${response.status}`);
+        console.log(`Error:${data.message}`);
       } else {
+        setAuthUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
         alert("User registered Successfuly");
+        navigate('/');
       }
     } catch (error) {
-      console.log("Error:", error.status());
+      console.log("Error:", error);
     }
   };
 
